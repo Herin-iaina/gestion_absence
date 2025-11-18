@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Employee - Gestion des Congés</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        nav {
+            background: #1a73e8;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav h1 {
+            display: inline-block;
+            margin-right: 2rem;
+            font-size: 24px;
+        }
+        
+        nav .user-info {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        nav button {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        nav button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: #1a73e8;
+            margin-bottom: 1.5rem;
+            font-size: 20px;
+        }
+        
+        .btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn:hover {
+            background: #1557b0;
+        }
+        
+        .btn-success {
+            background: #34a853;
+        }
+        
+        .btn-success:hover {
+            background: #2d8e47;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th, table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fef3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .error {
+            color: #e74c3c;
+            background: #fadbd8;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        
+        .success-msg {
+            color: #27ae60;
+            background: #d5f4e6;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>🏖️ Gestion des Congés</h1>
+        <div class="user-info">
+            <span id="userName"></span>
+            <button onclick="logout()">Déconnexion</button>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <!-- Section demande de congé -->
+        <div class="card">
+            <h2>📝 Demander un congé</h2>
+            <div id="error"></div>
+            <div id="success"></div>
+            
+            <form id="leaveForm">
+                <div class="form-group">
+                    <label for="type">Type d'absence *</label>
+                    <select id="type" name="type" required>
+                        <option value="conge_paye">Congé payé</option>
+                        <option value="maladie">Maladie</option>
+                        <option value="rtt">RTT</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="startDate">Date de début *</label>
+                        <input type="datetime-local" id="startDate" name="startDate" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="endDate">Date de fin *</label>
+                        <input type="datetime-local" id="endDate" name="endDate" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comment">Commentaire (optionnel)</label>
+                    <textarea id="comment" name="comment" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Envoyer la demande</button>
+            </form>
+        </div>
+        
+        <!-- Section mes demandes -->
+        <div class="card">
+            <h2>📋 Mes demandes de congé</h2>
+            <table id="myLeaves">
+                <thead>
+                    <tr>
+                        <th>Du</th>
+                        <th>Au</th>
+                        <th>Type</th>
+                        <th>Statut</th>
+                        <th>Demandé le</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="5" style="text-align: center; color: #999;">Chargement...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Section calendrier équipe -->
+        <div class="card">
+            <h2>👥 Congés validés de l'équipe</h2>
+            <div id="teamCalendar" style="color: #999; text-align: center;">Chargement du calendrier...</div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:8000';
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        
+        if (!token) {
+            window.location.href = '/frontend/index.html';
+        }
+        
+        document.getElementById('userName').textContent = user.username;
+        
+        // Charger mes demandes
+        async function loadMyLeaves() {
+            const response = await fetch(`${API_URL}/api/leaves/my-requests`, {
+                headers: {'Authorization': `Bearer ${token}`}
+            });
+            
+            if (response.ok) {
+                const leaves = await response.json();
+                const tbody = document.querySelector('#myLeaves tbody');
+                
+                if (leaves.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">Aucune demande</td></tr>';
+                } else {
+                    tbody.innerHTML = leaves.map(l => `
+                        <tr>
+                            <td>${new Date(l.start_date).toLocaleDateString('fr-FR')}</td>
+                            <td>${new Date(l.end_date).toLocaleDateString('fr-FR')}</td>
+                            <td>${l.leave_type}</td>
+                            <td><span class="status-badge status-${l.status}">${l.status}</span></td>
+                            <td>${new Date(l.created_at).toLocaleDateString('fr-FR')}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        }
+        
+        // Charger le calendrier de l'équipe
+        async function loadTeamCalendar() {
+            const response = await fetch(`${API_URL}/api/leaves/team/calendar`, {
+                headers: {'Authorization': `Bearer ${token}`}
+            });
+            
+            if (response.ok) {
+                const calendar = await response.json();
+                // Afficher les congés validés
+                let html = '<p>Congés validés de l\'équipe:</p><ul>';
+                
+                Object.values(calendar).forEach(userLeaves => {
+                    userLeaves.forEach(leave => {
+                        html += `<li>${new Date(leave.start_date).toLocaleDateString('fr-FR')} - ${new Date(leave.end_date).toLocaleDateString('fr-FR')}</li>`;
+                    });
+                });
+                
+                html += '</ul>';
+                document.getElementById('teamCalendar').innerHTML = html;
+            }
+        }
+        
+        // Envoyer demande de congé
+        document.getElementById('leaveForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const leave = {
+                start_date: document.getElementById('startDate').value,
+                end_date: document.getElementById('endDate').value,
+                leave_type: document.getElementById('type').value,
+                comment: document.getElementById('comment').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/api/leaves/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(leave)
+                });
+                
+                if (response.ok) {
+                    document.getElementById('success').innerHTML = '<div class="success-msg">✓ Demande envoyée avec succès!</div>';
+                    document.getElementById('leaveForm').reset();
+                    loadMyLeaves();
+                } else {
+                    const error = await response.json();
+                    document.getElementById('error').innerHTML = `<div class="error">✗ ${error.detail}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('error').innerHTML = `<div class="error">✗ Erreur: ${error.message}</div>`;
+            }
+        });
+        
+        // Logout
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/frontend/index.html';
+        }
+        
+        // Charger les données au démarrage
+        loadMyLeaves();
+        loadTeamCalendar();
+        setInterval(loadMyLeaves, 30000); // Rafraîchir toutes les 30s
+    </script>
+</body>
+</html>

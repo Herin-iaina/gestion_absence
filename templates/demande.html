@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Demande de congé{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📝 Demander un congé</h2>
+    
+    <form method="POST" action="/demande">
+        <div class="form-group">
+            <label for="nom">Nom complet *</label>
+            <input type="text" id="nom" name="nom" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="type">Type d'absence *</label>
+            <select id="type" name="type" required>
+                <option value="conge">Congé payé</option>
+                <option value="maladie">Maladie</option>
+                <option value="rtt">RTT</option>
+                <option value="autre">Autre</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="date_debut">Date de début *</label>
+            <input type="date" id="date_debut" name="date_debut" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="date_fin">Date de fin *</label>
+            <input type="date" id="date_fin" name="date_fin" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="commentaire">Commentaire (optionnel)</label>
+            <textarea id="commentaire" name="commentaire" rows="4"></textarea>
+        </div>
+        
+        <button type="submit" class="btn">Envoyer la demande</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Calendrier des congés{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📅 Calendrier des congés validés</h2>
+    <p>Vue d'ensemble des absences prévues dans l'équipe</p>
+</div>
+
+<div class="card">
+    <h3>Liste des congés à venir</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Du</th>
+                <th>Au</th>
+                <th>Type</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id, conge in conges.items() %}
+            <tr>
+                <td>{{ conge.nom }}</td>
+                <td>{{ conge.date_debut }}</td>
+                <td>{{ conge.date_fin }}</td>
+                <td>{{ conge.type }}</td>
+                <td><span class="status-badge status-{{ conge.statut }}">{{ conge.statut }}</span></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center; color: #999;">Aucun congé validé</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Validation des congés{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>✅ Validation des demandes de congé</h2>
+    
+    {% if conges %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Du</th>
+                <th>Au</th>
+                <th>Demandé le</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id, conge in conges.items() %}
+            <tr>
+                <td>{{ conge.nom }}</td>
+                <td>{{ conge.email }}</td>
+                <td>{{ conge.type }}</td>
+                <td>{{ conge.date_debut }}</td>
+                <td>{{ conge.date_fin }}</td>
+                <td>{{ conge.date_demande[:10] }}</td>
+                <td>
+                    <button class="btn btn-success" onclick="valider({{ id }})">✓ Valider</button>
+                    <button class="btn btn-danger" onclick="refuser({{ id }})">✗ Refuser</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="text-align: center; color: #999; padding: 2rem;">Aucune demande en attente</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function valider(id) {
+    if (!confirm('Valider cette demande de congé ?')) return;
+    
+    const response = await fetch(`/api/valider/${id}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({valideur: 'Manager'})
+    });
+    
+    const result = await response.json();
+    if (result.success) {
+        alert('Congé validé et événement créé dans le calendrier !');
+        location.reload();
+    } else {
+        alert('Erreur: ' + result.message);
+    }
+}
+
+async function refuser(id) {
+    const motif = prompt('Motif du refus (optionnel):');
+    if (motif === null) return;
+    
+    const response = await fetch(`/api/refuser/${id}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({motif: motif})
+    });
+    
+    const result = await response.json();
+    if (result.success) {
+        alert('Demande refusée');
+        location.reload();
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,6 @@
+username,email,full_name,role,password
+alice_martin,alice.martin@company.com,Alice Martin,manager,password123
+bob_durand,bob.durand@company.com,Bob Durand,employee,password456
+carol_bernard,carol.bernard@company.com,Carol Bernard,employee,password789
+david_thomas,david.thomas@company.com,David Thomas,manager,passwordabc
+emma_robert,emma.robert@company.com,Emma Robert,employee,passworddef

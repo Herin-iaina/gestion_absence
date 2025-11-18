@@ -1,0 +1,55 @@
+# Environments
+.env
+.env.local
+.env.*.local
+venv/
+env/
+backend/flask/
+backend/venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+dist/
+build/
+*.egg-info/
+
+# SQLite (if using locally)
+*.db
+*.sqlite
+*.sqlite3
+
+# Legacy Flask
+app.py.legacy
+templates.legacy/
+credentials.json
+
+# Logs
+*.log
+*.pot
+
+# Database
+postgres_data/
+
+# Node (if using Node frontend)
+node_modules/
+dist/
+.cache/
+
+# Docker
+.docker/
+
+# Misc
+.coverage
+htmlcov/

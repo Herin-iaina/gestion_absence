@@ -1,0 +1,25 @@
+<!-- templates/confirmation.html -->
+{% extends "base.html" %}
+
+{% block title %}Demande envoyée{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center;">
+    <h2>✅ Demande envoyée avec succès !</h2>
+    
+    <div style="background: #e8f0fe; padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+        <p style="font-size: 18px; margin-bottom: 1rem;">
+            Votre demande de congé a été enregistrée.
+        </p>
+        <p><strong>Du:</strong> {{ conge.date_debut }}</p>
+        <p><strong>Au:</strong> {{ conge.date_fin }}</p>
+        <p><strong>Statut:</strong> <span class="status-badge status-{{ conge.statut }}">En attente de validation</span></p>
+    </div>
+    
+    <p>Vous recevrez un email une fois votre demande traitée.</p>
+    
+    <a href="/" class="btn" style="display: inline-block; margin-top: 1rem; text-decoration: none;">
+        Retour à l'accueil
+    </a>
+</div>
+{% endblock %}
