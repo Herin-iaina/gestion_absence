@@ -12,7 +12,6 @@ if ! command -v docker &> /dev/null; then
 fi
 
 echo "📦 Construction et démarrage des containers..."
-cd backend
 docker-compose up -d
 
 echo ""
