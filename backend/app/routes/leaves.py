@@ -31,6 +31,25 @@ def create_leave_request(
         )
 
 
+@router.get("/", response_model=List[LeaveRequestResponse])
+def list_all_leaves(
+    status: str = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Lister tous les congés avec filtres optionnels (admin/manager)"""
+    # Seuls admin et manager peuvent voir tous les congés
+    if current_user.role not in [Role.MANAGER, Role.ADMIN]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Accès refusé"
+        )
+    
+    leaves = LeaveService.list_all_leaves(db, status)
+    return [LeaveRequestResponse.from_orm(l) for l in leaves]
+
+
+# ROUTES SPÉCIFIQUES (avant les routes génériques avec {leave_id})
 @router.get("/my-requests", response_model=List[LeaveRequestResponse])
 def get_my_leaves(
     db: Session = Depends(get_db),
@@ -41,6 +60,46 @@ def get_my_leaves(
     return [LeaveRequestResponse.from_orm(l) for l in leaves]
 
 
+@router.get("/pending-approvals")
+def get_pending_approvals(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role(Role.MANAGER, Role.ADMIN))
+):
+    """Récupérer les demandes en attente d'approbation (manager/admin)"""
+    leaves = LeaveService.list_pending_leaves(db, current_user.id)
+    return [LeaveRequestResponse.from_orm(l) for l in leaves]
+
+
+@router.get("/team/calendar")
+def get_team_calendar(
+    from_date: datetime = None,
+    to_date: datetime = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Récupérer le calendrier de l'équipe (congés validés)"""
+    if not from_date:
+        from_date = datetime.utcnow().replace(day=1)
+    
+    if not to_date:
+        # Dernier jour du mois actuel
+        next_month = from_date.replace(day=28) + timedelta(days=4)
+        to_date = next_month - timedelta(days=next_month.day)
+    
+    leaves = LeaveService.list_team_leaves(db, from_date, to_date)
+    
+    # Grouper par utilisateur
+    by_user = {}
+    for leave in leaves:
+        user_id = leave.user_id
+        if user_id not in by_user:
+            by_user[user_id] = []
+        by_user[user_id].append(LeaveRequestResponse.from_orm(leave))
+    
+    return by_user
+
+
+# ROUTES GÉNÉRIQUES (après les routes spécifiques)
 @router.get("/{leave_id}", response_model=LeaveRequestResponse)
 def get_leave_request(
     leave_id: int,
@@ -120,42 +179,3 @@ def reject_leave(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
         )
-
-
-@router.get("/team/calendar")
-def get_team_calendar(
-    from_date: datetime = None,
-    to_date: datetime = None,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    """Récupérer le calendrier de l'équipe (congés validés)"""
-    if not from_date:
-        from_date = datetime.utcnow().replace(day=1)
-    
-    if not to_date:
-        # Dernier jour du mois actuel
-        next_month = from_date.replace(day=28) + timedelta(days=4)
-        to_date = next_month - timedelta(days=next_month.day)
-    
-    leaves = LeaveService.list_team_leaves(db, from_date, to_date)
-    
-    # Grouper par utilisateur
-    by_user = {}
-    for leave in leaves:
-        user_id = leave.user_id
-        if user_id not in by_user:
-            by_user[user_id] = []
-        by_user[user_id].append(LeaveRequestResponse.from_orm(leave))
-    
-    return by_user
-
-
-@router.get("/pending-approvals")
-def get_pending_approvals(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_role(Role.MANAGER, Role.ADMIN))
-):
-    """Récupérer les demandes en attente d'approbation (manager/admin)"""
-    leaves = LeaveService.list_pending_leaves(db, current_user.id)
-    return [LeaveRequestResponse.from_orm(l) for l in leaves]

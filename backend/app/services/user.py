@@ -34,6 +34,32 @@ class UserService:
         ).first()
     
     @staticmethod
+    def create_user(db: Session, user_create: UserCreate) -> User:
+        """Créer un nouvel utilisateur"""
+        # Vérifier que l'utilisateur n'existe pas
+        existing = db.query(User).filter(
+            or_(User.username == user_create.username, User.email == user_create.email)
+        ).first()
+        
+        if existing:
+            raise ValueError(f"L'utilisateur '{user_create.username}' ou l'email '{user_create.email}' existe déjà")
+        
+        # Créer l'utilisateur
+        user = User(
+            username=user_create.username,
+            email=user_create.email,
+            hashed_password=hash_password(user_create.password),
+            full_name=user_create.full_name,
+            role=user_create.role or Role.EMPLOYEE,
+            is_active=True
+        )
+        
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        return user
+    
+    @staticmethod
     def update_user(db: Session, user_id: int, user_update: UserUpdate) -> User:
         """Mettre à jour un utilisateur"""
         user = db.query(User).filter(User.id == user_id).first()

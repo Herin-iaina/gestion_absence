@@ -65,6 +65,20 @@ class LeaveService:
         ).order_by(LeaveRequest.created_at.desc()).all()
     
     @staticmethod
+    def list_all_leaves(db: Session, status_filter: str = None) -> List[LeaveRequest]:
+        """Lister tous les congés avec filtre optionnel sur le statut"""
+        query = db.query(LeaveRequest)
+        
+        if status_filter:
+            # Parse status filter (peut être "approved,rejected,cancelled" ou "approved")
+            statuses = [s.strip().upper() for s in status_filter.split(',')]
+            status_enums = [LeaveStatus[s] for s in statuses if s in LeaveStatus.__members__]
+            if status_enums:
+                query = query.filter(LeaveRequest.status.in_(status_enums))
+        
+        return query.order_by(LeaveRequest.created_at.desc()).all()
+    
+    @staticmethod
     def list_team_leaves(db: Session, from_date: datetime, to_date: datetime) -> List[LeaveRequest]:
         """Lister tous les congés validés dans une plage de dates"""
         return db.query(LeaveRequest).filter(

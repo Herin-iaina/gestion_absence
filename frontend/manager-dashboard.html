@@ -222,8 +222,8 @@
                 } else {
                     tbody.innerHTML = leaves.map(l => `
                         <tr>
-                            <td>${l.user_id}</td>
-                            <td>-</td>
+                            <td>${l.user.full_name}</td>
+                            <td>${l.user.email}</td>
                             <td>${l.leave_type}</td>
                             <td>${new Date(l.start_date).toLocaleDateString('fr-FR')}</td>
                             <td>${new Date(l.end_date).toLocaleDateString('fr-FR')}</td>
@@ -232,6 +232,33 @@
                                 <button class="btn btn-success" onclick="approveLLeave(${l.id})">✓ Valider</button>
                                 <button class="btn btn-danger" onclick="rejectLeave(${l.id})">✗ Refuser</button>
                             </td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        }
+        
+        // Charger l'historique des validations
+        async function loadLeaveHistory() {
+            const response = await fetch(`${API_URL}/api/leaves?status=approved,rejected,cancelled`, {
+                headers: {'Authorization': `Bearer ${token}`}
+            });
+            
+            if (response.ok) {
+                const leaves = await response.json();
+                const tbody = document.querySelector('#allLeaves tbody');
+                
+                if (leaves.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">Aucun historique</td></tr>';
+                } else {
+                    tbody.innerHTML = leaves.map(l => `
+                        <tr>
+                            <td>${l.user.full_name}</td>
+                            <td>${l.leave_type}</td>
+                            <td>${new Date(l.start_date).toLocaleDateString('fr-FR')}</td>
+                            <td>${new Date(l.end_date).toLocaleDateString('fr-FR')}</td>
+                            <td><span style="background: ${l.status === 'APPROVED' ? '#34a853' : '#ea4335'}; color: white; padding: 4px 8px; border-radius: 4px;">${l.status}</span></td>
+                            <td>${l.rejection_reason || '-'}</td>
                         </tr>
                     `).join('');
                 }
@@ -279,7 +306,9 @@
         
         // Charger les données au démarrage
         loadPendingLeaves();
+        loadLeaveHistory();
         setInterval(loadPendingLeaves, 30000); // Rafraîchir toutes les 30s
+        setInterval(loadLeaveHistory, 60000); // Rafraîchir historique toutes les 60s
     </script>
 </body>
 </html>

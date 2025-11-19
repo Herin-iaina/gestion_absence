@@ -5,6 +5,16 @@ from datetime import datetime
 from app.models.leave_request import LeaveStatus, LeaveType
 
 
+class UserShortResponse(BaseModel):
+    """Informations courtes utilisateur pour réponse congés"""
+    id: int
+    full_name: str
+    email: str
+    
+    class Config:
+        from_attributes = True
+
+
 class LeaveRequestCreate(BaseModel):
     """Créer une demande de congé"""
     start_date: datetime
@@ -26,6 +36,7 @@ class LeaveRequestResponse(BaseModel):
     """Réponse demande de congé"""
     id: int
     user_id: int
+    user: UserShortResponse  # Ajout: infos employé
     start_date: datetime
     end_date: datetime
     leave_type: LeaveType
