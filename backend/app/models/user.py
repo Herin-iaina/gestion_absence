@@ -30,7 +30,19 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     
     # Relationships
-    leave_requests = relationship("LeaveRequest", back_populates="user")
+    # Demandes de congés de l'utilisateur (user_id)
+    leave_requests = relationship(
+        "LeaveRequest",
+        back_populates="user",
+        foreign_keys="LeaveRequest.user_id"
+    )
+    
+    # Demandes approuvées par l'utilisateur (approved_by_id)
+    approved_leaves = relationship(
+        "LeaveRequest",
+        back_populates="approved_by",
+        foreign_keys="LeaveRequest.approved_by_id"
+    )
     
     def __repr__(self):
         return f"<User(id={self.id}, username={self.username}, role={self.role})>"

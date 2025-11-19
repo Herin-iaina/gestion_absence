@@ -54,7 +54,7 @@ class LeaveRequest(Base):
     
     # Relationships
     user = relationship("User", foreign_keys=[user_id], back_populates="leave_requests")
-    approved_by = relationship("User", foreign_keys=[approved_by_id])
+    approved_by = relationship("User", foreign_keys=[approved_by_id], back_populates="approved_leaves")
     
     def __repr__(self):
         return f"<LeaveRequest(id={self.id}, user_id={self.user_id}, status={self.status})>"
