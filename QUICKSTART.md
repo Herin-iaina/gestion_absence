@@ -36,7 +36,7 @@ En parallèle, lancez un serveur local pour les fichiers frontend:
 
 ```bash
 # Terminal 2
-cd frontend
+# cd frontend
 python -m http.server 3000
 ```
 
