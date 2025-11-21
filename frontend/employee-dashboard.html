@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Employee - Gestion des Congés</title>
+    <title>Dashboard Employé - Gestion des Congés</title>
     <style>
         * {
             margin: 0;
@@ -18,18 +18,16 @@
         }
         
         nav {
-            background: #1a73e8;
+            background: linear-gradient(135deg, #1a73e8 0%, #1557b0 100%);
             color: white;
             padding: 1rem 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         nav h1 {
-            display: inline-block;
-            margin-right: 2rem;
             font-size: 24px;
         }
         
@@ -46,6 +44,7 @@
             padding: 0.5rem 1rem;
             border-radius: 4px;
             cursor: pointer;
+            transition: background 0.3s;
         }
         
         nav button:hover {
@@ -53,7 +52,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 2rem auto;
             padding: 0 2rem;
         }
@@ -66,10 +65,45 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
         h2 {
             color: #1a73e8;
-            margin-bottom: 1.5rem;
             font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .filter-group label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
         }
         
         .btn {
@@ -80,6 +114,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            transition: background 0.3s;
         }
         
         .btn:hover {
@@ -92,6 +127,19 @@
         
         .btn-success:hover {
             background: #2d8e47;
+        }
+        
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 14px;
+        }
+        
+        .btn-danger {
+            background: #ea4335;
+        }
+        
+        .btn-danger:hover {
+            background: #c5362e;
         }
         
         table {
@@ -108,13 +156,18 @@
         table th {
             background: #f8f9fa;
             font-weight: 600;
+            font-size: 14px;
+        }
+        
+        table td {
+            font-size: 14px;
         }
         
         .status-badge {
             display: inline-block;
             padding: 0.25rem 0.75rem;
             border-radius: 12px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
         }
         
@@ -151,6 +204,12 @@
             font-size: 16px;
         }
         
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
         .error {
             color: #e74c3c;
             background: #fadbd8;
@@ -166,6 +225,107 @@
             border-radius: 4px;
             margin-bottom: 1rem;
         }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #ddd;
+            border: 1px solid #ddd;
+        }
+        
+        .calendar-day {
+            background: white;
+            padding: 0.5rem;
+            min-height: 80px;
+            font-size: 12px;
+        }
+        
+        .calendar-day-header {
+            background: #f8f9fa;
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .calendar-day-number {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .calendar-leave {
+            background: #e8f0fe;
+            color: #1a73e8;
+            padding: 0.2rem;
+            margin: 0.2rem 0;
+            border-radius: 2px;
+            font-size: 10px;
+        }
+        
+        .team-leave-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #34a853;
+        }
+        
+        .team-leave-info {
+            flex: 1;
+        }
+        
+        .team-leave-name {
+            font-weight: 600;
+            color: #1a73e8;
+            margin-bottom: 0.25rem;
+        }
+        
+        .team-leave-dates {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .team-leave-days {
+            background: #34a853;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .search-box {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 300px;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .view-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #1a73e8;
+            background: white;
+            color: #1a73e8;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .view-btn.active {
+            background: #1a73e8;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -178,24 +338,26 @@
     </nav>
     
     <div class="container">
-        <!-- Section demande de congé -->
+        <!-- Formulaire de demande -->
         <div class="card">
             <h2>📝 Demander un congé</h2>
             <div id="error"></div>
             <div id="success"></div>
             
             <form id="leaveForm">
-                <div class="form-group">
-                    <label for="type">Type d'absence *</label>
-                    <select id="type" name="type" required>
-                        <option value="conge_paye">Congé payé</option>
-                        <option value="maladie">Maladie</option>
-                        <option value="rtt">RTT</option>
-                        <option value="autre">Autre</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="type">Type d'absence *</label>
+                        <select id="type" name="type" required>
+                            <option value="conge_paye">Congé payé</option>
+                            <option value="maladie">Maladie</option>
+                            <option value="rtt">RTT</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-row">
                     <div class="form-group">
                         <label for="startDate">Date de début *</label>
                         <input type="datetime-local" id="startDate" name="startDate" required>
@@ -208,7 +370,7 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="comment">Commentaire (optionnel)</label>
+                    <label for="comment">Commentaire</label>
                     <textarea id="comment" name="comment" rows="3"></textarea>
                 </div>
                 
@@ -216,29 +378,59 @@
             </form>
         </div>
         
-        <!-- Section mes demandes -->
+        <!-- Mes demandes -->
         <div class="card">
-            <h2>📋 Mes demandes de congé</h2>
+            <div class="card-header">
+                <h2>📋 Mes demandes de congé</h2>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="yearFilter">Année:</label>
+                        <select id="yearFilter" onchange="loadMyLeaves()">
+                            <!-- Options générées dynamiquement -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
             <table id="myLeaves">
                 <thead>
                     <tr>
+                        <th>Type</th>
                         <th>Du</th>
                         <th>Au</th>
-                        <th>Type</th>
+                        <th>Nb de jours</th>
+                        <th>Commentaire</th>
                         <th>Statut</th>
                         <th>Demandé le</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td colspan="5" style="text-align: center; color: #999;">Chargement...</td></tr>
+                    <tr><td colspan="7" style="text-align: center; color: #999;">Chargement...</td></tr>
                 </tbody>
             </table>
         </div>
         
-        <!-- Section calendrier équipe -->
+        <!-- Calendrier équipe -->
         <div class="card">
-            <h2>👥 Congés validés de l'équipe</h2>
-            <div id="teamCalendar" style="color: #999; text-align: center;">Chargement du calendrier...</div>
+            <div class="card-header">
+                <h2>👥 Congés validés de l'équipe</h2>
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="showTeamView('list')">Liste</button>
+                    <button class="view-btn" onclick="showTeamView('calendar')">Calendrier</button>
+                </div>
+            </div>
+            
+            <div class="filters">
+                <input type="text" id="searchTeam" class="search-box" placeholder="Rechercher par nom..." oninput="filterTeamLeaves()">
+            </div>
+            
+            <div id="teamListView">
+                <div id="teamLeavesList"></div>
+            </div>
+            
+            <div id="teamCalendarView" style="display: none;">
+                <div class="calendar" id="teamCalendar"></div>
+            </div>
         </div>
     </div>
     
@@ -246,6 +438,7 @@
         const API_URL = 'http://localhost:8000';
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
+        let allTeamLeaves = [];
         
         if (!token) {
             window.location.href = '/frontend/index.html';
@@ -253,9 +446,27 @@
         
         document.getElementById('userName').textContent = user.username;
         
+        // Initialiser les filtres d'année
+        function initYearFilters() {
+            const currentYear = new Date().getFullYear();
+            const yearFilter = document.getElementById('yearFilter');
+            
+            yearFilter.innerHTML = '<option value="">Toutes les années</option>';
+            for (let i = currentYear; i >= currentYear - 5; i--) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                if (i === currentYear) option.selected = true;
+                yearFilter.appendChild(option);
+            }
+        }
+        
         // Charger mes demandes
         async function loadMyLeaves() {
-            const response = await fetch(`${API_URL}/api/leaves/my-requests`, {
+            const year = document.getElementById('yearFilter').value;
+            const url = year ? `${API_URL}/api/leaves/my-requests?year=${year}` : `${API_URL}/api/leaves/my-requests`;
+            
+            const response = await fetch(url, {
                 headers: {'Authorization': `Bearer ${token}`}
             });
             
@@ -264,14 +475,16 @@
                 const tbody = document.querySelector('#myLeaves tbody');
                 
                 if (leaves.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">Aucune demande</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #999;">Aucune demande</td></tr>';
                 } else {
                     tbody.innerHTML = leaves.map(l => `
                         <tr>
+                            <td>${formatLeaveType(l.leave_type)}</td>
                             <td>${new Date(l.start_date).toLocaleDateString('fr-FR')}</td>
                             <td>${new Date(l.end_date).toLocaleDateString('fr-FR')}</td>
-                            <td>${l.leave_type}</td>
-                            <td><span class="status-badge status-${l.status}">${l.status}</span></td>
+                            <td><strong>${l.number_of_days} jour${l.number_of_days > 1 ? 's' : ''}</strong></td>
+                            <td>${l.comment || '-'}</td>
+                            <td><span class="status-badge status-${l.status}">${formatStatus(l.status)}</span></td>
                             <td>${new Date(l.created_at).toLocaleDateString('fr-FR')}</td>
                         </tr>
                     `).join('');
@@ -286,22 +499,125 @@
             });
             
             if (response.ok) {
-                const calendar = await response.json();
-                // Afficher les congés validés
-                let html = '<p>Congés validés de l\'équipe:</p><ul>';
-                
-                Object.values(calendar).forEach(userLeaves => {
-                    userLeaves.forEach(leave => {
-                        html += `<li>${new Date(leave.start_date).toLocaleDateString('fr-FR')} - ${new Date(leave.end_date).toLocaleDateString('fr-FR')}</li>`;
-                    });
-                });
-                
-                html += '</ul>';
-                document.getElementById('teamCalendar').innerHTML = html;
+                allTeamLeaves = await response.json();
+                displayTeamLeavesList();
             }
         }
         
-        // Envoyer demande de congé
+        // Afficher la liste des congés
+        function displayTeamLeavesList() {
+            const container = document.getElementById('teamLeavesList');
+            
+            if (allTeamLeaves.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999;">Aucun congé validé</p>';
+                return;
+            }
+            
+            let html = '';
+            allTeamLeaves.forEach(userLeaves => {
+                userLeaves.leaves.forEach(leave => {
+                    html += `
+                        <div class="team-leave-item" data-name="${userLeaves.username.toLowerCase()}">
+                            <div class="team-leave-info">
+                                <div class="team-leave-name">${userLeaves.username}</div>
+                                <div class="team-leave-dates">
+                                    ${new Date(leave.start_date).toLocaleDateString('fr-FR')} - 
+                                    ${new Date(leave.end_date).toLocaleDateString('fr-FR')}
+                                    • ${formatLeaveType(leave.leave_type)}
+                                </div>
+                            </div>
+                            <div class="team-leave-days">
+                                ${leave.number_of_days} jour${leave.number_of_days > 1 ? 's' : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Filtrer les congés de l'équipe
+        function filterTeamLeaves() {
+            const search = document.getElementById('searchTeam').value.toLowerCase();
+            const items = document.querySelectorAll('.team-leave-item');
+            
+            items.forEach(item => {
+                const name = item.getAttribute('data-name');
+                item.style.display = name.includes(search) ? 'flex' : 'none';
+            });
+        }
+        
+        // Changer la vue (liste/calendrier)
+        function showTeamView(view) {
+            const listView = document.getElementById('teamListView');
+            const calendarView = document.getElementById('teamCalendarView');
+            const buttons = document.querySelectorAll('.view-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (view === 'list') {
+                listView.style.display = 'block';
+                calendarView.style.display = 'none';
+                buttons[0].classList.add('active');
+            } else {
+                listView.style.display = 'none';
+                calendarView.style.display = 'block';
+                buttons[1].classList.add('active');
+                generateCalendar();
+            }
+        }
+        
+        // Générer le calendrier
+        function generateCalendar() {
+            const calendar = document.getElementById('teamCalendar');
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startDay = firstDay.getDay();
+            
+            let html = '';
+            const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            
+            // En-têtes
+            dayNames.forEach(day => {
+                html += `<div class="calendar-day-header">${day}</div>`;
+            });
+            
+            // Jours vides avant le 1er
+            for (let i = 0; i < startDay; i++) {
+                html += '<div class="calendar-day"></div>';
+            }
+            
+            // Jours du mois
+            for (let day = 1; day <= daysInMonth; day++) {
+                const currentDate = new Date(year, month, day);
+                html += `<div class="calendar-day">
+                    <div class="calendar-day-number">${day}</div>`;
+                
+                // Ajouter les congés pour ce jour
+                allTeamLeaves.forEach(userLeaves => {
+                    userLeaves.leaves.forEach(leave => {
+                        const start = new Date(leave.start_date);
+                        const end = new Date(leave.end_date);
+                        
+                        if (currentDate >= start && currentDate <= end) {
+                            html += `<div class="calendar-leave">${userLeaves.username}</div>`;
+                        }
+                    });
+                });
+                
+                html += '</div>';
+            }
+            
+            calendar.innerHTML = html;
+        }
+        
+        // Soumettre une demande
         document.getElementById('leaveForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -324,27 +640,59 @@
                 
                 if (response.ok) {
                     document.getElementById('success').innerHTML = '<div class="success-msg">✓ Demande envoyée avec succès!</div>';
+                    document.getElementById('error').innerHTML = '';
                     document.getElementById('leaveForm').reset();
                     loadMyLeaves();
+                    setTimeout(() => {
+                        document.getElementById('success').innerHTML = '';
+                    }, 3000);
                 } else {
                     const error = await response.json();
                     document.getElementById('error').innerHTML = `<div class="error">✗ ${error.detail}</div>`;
+                    document.getElementById('success').innerHTML = '';
                 }
             } catch (error) {
                 document.getElementById('error').innerHTML = `<div class="error">✗ Erreur: ${error.message}</div>`;
+                document.getElementById('success').innerHTML = '';
             }
         });
         
-        // Logout
+        // Fonctions utilitaires
+        function formatLeaveType(type) {
+            const types = {
+                'conge_paye': 'Congé payé',
+                'maladie': 'Maladie',
+                'rtt': 'RTT',
+                'conge_parental': 'Congé parental',
+                'sans_solde': 'Sans solde',
+                'autre': 'Autre'
+            };
+            return types[type] || type;
+        }
+        
+        function formatStatus(status) {
+            const statuses = {
+                'pending': 'En attente',
+                'approved': 'Approuvé',
+                'rejected': 'Rejeté',
+                'cancelled': 'Annulé'
+            };
+            return statuses[status] || status;
+        }
+        
         function logout() {
             localStorage.clear();
             window.location.href = '/frontend/index.html';
         }
         
-        // Charger les données au démarrage
+        // Initialisation
+        initYearFilters();
         loadMyLeaves();
         loadTeamCalendar();
-        setInterval(loadMyLeaves, 30000); // Rafraîchir toutes les 30s
+        setInterval(() => {
+            loadMyLeaves();
+            loadTeamCalendar();
+        }, 30000);
     </script>
 </body>
 </html>
